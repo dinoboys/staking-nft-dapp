@@ -5,11 +5,13 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract FlappyOwlToken is ERC20, ERC20Burnable, Ownable {
     //--------------------------------------------------------------------
     // VARIABLES
 
+    using SafeMath for uint256;
     mapping(address => bool) controllers;
 
     //--------------------------------------------------------------------
@@ -20,7 +22,7 @@ contract FlappyOwlToken is ERC20, ERC20Burnable, Ownable {
     //--------------------------------------------------------------------
     // CONSTRUCTOR
 
-    constructor() ERC20("Krypto Punks Token", "KPT") {}
+    constructor() ERC20("Flappy Owl Token", "FOT") {}
 
     //--------------------------------------------------------------------
     // FUNCTIONS

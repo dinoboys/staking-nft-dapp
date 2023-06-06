@@ -5,6 +5,7 @@ coverage.json
 typechain
 typechain-types
 
+data-deploy.txt
 smart_contracts/artifacts
 smart_contracts/cache
 #env file 
