@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.7;
+pragma solidity 0.8.17;
 
-import "./interfaces/IKryptoPunks.sol";
-import "./interfaces/IKryptoPunksToken.sol";
+import "../interfaces/IFlappyOwlNft.sol";
+import "../interfaces/IFlappyOwlToken.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFTStakingVault is Ownable, IERC721Receiver {
+contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
     //--------------------------------------------------------------------
     // VARIABLES
 
     uint256 public totalItemsStaked;
     uint256 private constant MONTH = 30 days;
 
-    IKryptoPunks immutable nft;
-    IKryptoPunksToken immutable token;
+    IFlappyOwlNft immutable nft;
+    IFlappyOwlToken immutable token;
 
     struct Stake {
         address owner;
@@ -34,15 +34,15 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
     //--------------------------------------------------------------------
     // ERRORS
 
-    error NFTStakingVault__ItemAlreadyStaked();
-    error NFTStakingVault__NotItemOwner();
+    error FlappyOwlStakingVault__ItemAlreadyStaked();
+    error FlappyOwlStakingVault__NotItemOwner();
 
     //--------------------------------------------------------------------
     // CONSTRUCTOR
 
     constructor(address _nftAddress, address _tokenAddress) {
-        nft = IKryptoPunks(_nftAddress);
-        token = IKryptoPunksToken(_tokenAddress);
+        nft = IFlappyOwlNft(_nftAddress);
+        token = IFlappyOwlToken(_tokenAddress);
     }
 
     //--------------------------------------------------------------------
@@ -51,15 +51,15 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
     function stake(uint256[] calldata tokenIds) external {
         uint256 tokenId;
         uint256 stakedCount;
-        
+
         uint256 len = tokenIds.length;
         for (uint256 i; i < len; ) {
             tokenId = tokenIds[i];
             if (vault[tokenId].owner != address(0)) {
-                revert NFTStakingVault__ItemAlreadyStaked();
+                revert FlappyOwlStakingVault__ItemAlreadyStaked();
             }
             if (nft.ownerOf(tokenId) != msg.sender) {
-                revert NFTStakingVault__NotItemOwner();
+                revert FlappyOwlStakingVault__NotItemOwner();
             }
 
             nft.safeTransferFrom(msg.sender, address(this), tokenId);
@@ -92,12 +92,12 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
         uint256 tokenId;
         uint256 calculatedReward;
         uint256 rewardEarned;
-        
+
         uint256 len = tokenIds.length;
         for (uint256 i; i < len; ) {
             tokenId = tokenIds[i];
             if (vault[tokenId].owner != user) {
-                revert NFTStakingVault__NotItemOwner();
+                revert FlappyOwlStakingVault__NotItemOwner();
             }
             uint256 _stakedAt = vault[tokenId].stakedAt;
 
@@ -129,7 +129,7 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
     function _unstake(address user, uint256[] calldata tokenIds) internal {
         uint256 tokenId;
         uint256 unstakedCount;
-        
+
         uint256 len = tokenIds.length;
         for (uint256 i; i < len; ) {
             tokenId = tokenIds[i];
@@ -150,11 +150,9 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
     }
 
     // calculate the daily staking reward based on the NFT staking period
-    function _calculateReward(uint256 stakingPeriod)
-        internal
-        pure
-        returns (uint256 dailyReward)
-    {
+    function _calculateReward(
+        uint256 stakingPeriod
+    ) internal pure returns (uint256 dailyReward) {
         if (stakingPeriod <= MONTH) {
             dailyReward = 1;
         } else if (stakingPeriod < 3 * MONTH) {
@@ -169,22 +167,18 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
     //--------------------------------------------------------------------
     // VIEW FUNCTIONS
 
-    function getDailyReward(uint256 stakingPeriod)
-        external
-        pure
-        returns (uint256 dailyReward)
-    {
+    function getDailyReward(
+        uint256 stakingPeriod
+    ) external pure returns (uint256 dailyReward) {
         dailyReward = _calculateReward(stakingPeriod);
     }
 
-    function getTotalRewardEarned(address user)
-        external
-        view
-        returns (uint256 rewardEarned)
-    {
+    function getTotalRewardEarned(
+        address user
+    ) external view returns (uint256 rewardEarned) {
         uint256 calculatedReward;
         uint256[] memory tokens = tokensOfOwner(user);
-        
+
         uint256 len = tokens.length;
         for (uint256 i; i < len; ) {
             uint256 _stakedAt = vault[tokens[i]].stakedAt;
@@ -198,14 +192,11 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
             }
         }
         rewardEarned = calculatedReward / 100;
-        
     }
 
-    function getRewardEarnedPerNft(uint256 _tokenId)
-        external
-        view
-        returns (uint256 rewardEarned)
-    {
+    function getRewardEarnedPerNft(
+        uint256 _tokenId
+    ) external view returns (uint256 rewardEarned) {
         uint256 _stakedAt = vault[_tokenId].stakedAt;
         uint256 stakingPeriod = block.timestamp - _stakedAt;
         uint256 _dailyReward = _calculateReward(stakingPeriod);
@@ -214,11 +205,9 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
         rewardEarned = calculatedReward / 100;
     }
 
-    function balanceOf(address user)
-        public
-        view
-        returns (uint256 nftStakedbalance)
-    {
+    function balanceOf(
+        address user
+    ) public view returns (uint256 nftStakedbalance) {
         uint256 supply = nft.totalSupply();
         unchecked {
             for (uint256 i; i <= supply; ++i) {
@@ -229,11 +218,9 @@ contract NFTStakingVault is Ownable, IERC721Receiver {
         }
     }
 
-    function tokensOfOwner(address user)
-        public
-        view
-        returns (uint256[] memory tokens)
-    {
+    function tokensOfOwner(
+        address user
+    ) public view returns (uint256[] memory tokens) {
         uint256 balance = balanceOf(user);
         uint256 supply = nft.totalSupply();
         tokens = new uint256[](balance);

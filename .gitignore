@@ -5,6 +5,8 @@ coverage.json
 typechain
 typechain-types
 
+smart_contracts/artifacts
+smart_contracts/cache
 #env file 
 smart_contracts/.env
 # Hardhat files
