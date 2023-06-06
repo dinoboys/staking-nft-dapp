@@ -7,6 +7,8 @@ typechain-types
 
 data-deploy.txt
 smart_contracts/artifacts
+front-end/src/artifacts
+front-end/src/artifacts-old
 smart_contracts/cache
 #env file 
 smart_contracts/.env

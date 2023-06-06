@@ -92,6 +92,7 @@ module.exports = {
   etherscan: {
     apiKey: {
       default: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
       rinkeby: RINKEBY_ETHERSCAN_API_KEY,
       bsc: BSCSCAN_API_KEY,
     },
