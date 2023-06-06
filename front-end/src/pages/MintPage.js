@@ -58,7 +58,7 @@ function MintPage() {
       const signer = provider.getSigner();
       const user = await signer.getAddress();
 
-      console.log(nft_contract.balanceOf(user));
+      //   console.log(nft_contract.balanceOf(user));
       const stakedTokens = Array.from(
         await staking_contract.balanceOf(user),
         (x) => Number(x)
@@ -72,6 +72,7 @@ function MintPage() {
       const maxMintAmountPerTx = await nft_contract.maxMintAmountPerTx();
       const cost = await nft_contract.mintCost();
       const baseURI = await nft_contract.tokenURI();
+      console.log(baseURI);
       const baseExtension = "";
       //   const baseExtension = await nft_contract.baseExtension();
       const totalSupply = await nft_contract.totalSupply();
