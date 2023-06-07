@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /*
  * ** author  : floorprice.lab
- * ** package : @contracts/ERC721/FlappyOwlNft.sol
+ * ** package : @contracts/ERC721/RabbitBounching.sol
  */
 pragma solidity 0.8.17;
 
@@ -10,10 +10,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "../interfaces/IFODescriptor.sol";
 
-contract FlappyOwlNft is ERC721, Ownable {
+contract RabbitBounching is ERC721Enumerable, Ownable {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private supply;
@@ -39,7 +39,7 @@ contract FlappyOwlNft is ERC721, Ownable {
         uint256 _maxMintAmountPerTx,
         uint256 _mintLimit,
         IFODescriptor newDescriptor
-    ) ERC721("Flappy Owl", "o,O") {
+    ) ERC721("Rabbit Bounching", "x.x") {
         mintingStatus = _minting;
         updatableSeed = _updatableSeed;
         mintCost = _mintCost;
@@ -75,23 +75,12 @@ contract FlappyOwlNft is ERC721, Ownable {
     }
 
     function _mintLoop(address _receiver, uint256 _mintAmount) internal {
-        uint256 nextTokenId = totalSupply() + 1;
-        unchecked {
-            require(
-                nextTokenId + _mintAmount <= maxSupply,
-                "Exceeds max supply."
-            );
-        }
-
-        for (uint256 i; i < _mintAmount; ) {
+        for (uint256 i; i < _mintAmount; i++) {
+            uint256 nextTokenId = totalSupply() + 1;
             seeds[nextTokenId] = generateSeed(nextTokenId);
             _mint(_receiver, nextTokenId);
-            unchecked {
-                ++nextTokenId;
-                ++i;
-            }
+            supply.increment();
         }
-        mintCount[msg.sender] += _mintAmount;
         if (address(this).balance > 0) {
             payable(beneficiaryAddr).transfer(address(this).balance);
         }
@@ -141,7 +130,7 @@ contract FlappyOwlNft is ERC721, Ownable {
         return descriptor.tokenURI(tokenId, seed);
     }
 
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
         return supply.current();
     }
 

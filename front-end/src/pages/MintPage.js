@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../assets/styles.css";
-import image1 from "../assets/img/mint-punk.png";
+import image1 from "../assets/img/min-page-rabit.svg";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
@@ -9,8 +9,8 @@ import axios from "axios";
 import { Table } from "react-bootstrap";
 import { CircularProgress } from "@mui/material";
 
-import stakingContract from "../artifacts/contracts/utils/FlappyOwlStakingVault.sol/FlappyOwlStakingVault.json";
-import nftContract from "../artifacts/contracts/ERC721/FlappyOwlNft.sol/FlappyOwlNft.json";
+import stakingContract from "../artifacts/utils/RabbitBounchingStakingVault.sol/RabbitBounchingStakingVault.json";
+import nftContract from "../artifacts/ERC721/RabbitBounching.sol/RabbitBounching.json";
 import {
   stakingContractAddress,
   nftContractAddress,
@@ -28,6 +28,7 @@ function MintPage() {
     currentSupply: 0,
     maxSupply: 0,
     maxMintAmountPerTx: 0,
+    nftUserBalance: 0,
     mintCost: 0,
     paused: false,
     userNftIds: [],
@@ -37,6 +38,7 @@ function MintPage() {
   const [loading, setLoading] = useState(false);
 
   const getInfo = async () => {
+    // console.log("getInfo");
     if (data.network === networksMap[networkDeployedTo]) {
       const provider = new ethers.providers.Web3Provider(
         window.ethereum,
@@ -58,28 +60,30 @@ function MintPage() {
       const signer = provider.getSigner();
       const user = await signer.getAddress();
 
-      //   console.log(nft_contract.balanceOf(user));
-      const stakedTokens = Array.from(
-        await staking_contract.balanceOf(user),
-        (x) => Number(x)
-      );
+      const stakedTokens = await staking_contract.tokensOfOwner(user);
       const reward = await staking_contract.getTotalRewardEarned(user);
-
       const paused = await nft_contract.mintingStatus();
-      var userTokens = Array.from(await nft_contract.balanceOf(user), (x) =>
-        Number(x)
-      );
+
+      var userTokens = [];
       const maxMintAmountPerTx = await nft_contract.maxMintAmountPerTx();
       const cost = await nft_contract.mintCost();
-      const baseURI = await nft_contract.tokenURI();
-      console.log(baseURI);
-      const baseExtension = "";
-      //   const baseExtension = await nft_contract.baseExtension();
+      const nftUserBalance = await nft_contract.balanceOf(user);
+      for (var i = 0; i < nftUserBalance; i++) {
+        userTokens[i] = await nft_contract.tokenOfOwnerByIndex(user, i);
+      }
+      // const tokenURI = await contract.methods.tokenURI(tokenId);
+      // const baseExtension = "";
+      // //   const baseExtension = await nft_contract.baseExtension();
       const totalSupply = await nft_contract.totalSupply();
+      const mintCount = await nft_contract.getmintCount();
       const maxSupply = await nft_contract.maxSupply();
       userTokens = userTokens.concat(stakedTokens).sort();
+      console.log("nftUser:" + userTokens);
 
       setInfo({
+        nftName: "Rabbit Bounching Nft",
+        nftSymbol: "(x.x)",
+        nftUserBalance: nftUserBalance,
         currentSupply: Number(totalSupply),
         maxSupply: Number(maxSupply),
         maxMintAmountPerTx: Number(maxMintAmountPerTx),
@@ -92,19 +96,18 @@ function MintPage() {
 
       const _userNfts = await Promise.all(
         userTokens.map(async (nft) => {
-          const metadata = await axios.get(
-            baseURI.replace("ipfs://", "https://ipfs.io/ipfs/") +
-              "/" +
-              nft.toString() +
-              baseExtension
-          );
+          const dataURI = await nft_contract.tokenURI(nft);
+          const metadata = atob(dataURI.substring(29));
+          const typeOF = typeof metadata;
+          // const jsonMetadata = JSON.stringify(metadata);
+          const jsonMetadata = JSON.parse(metadata);
+          const imgURI = jsonMetadata.image;
           return {
             id: nft,
-            uri: metadata.data.image.replace(
-              "ipfs://",
-              "https://ipfs.io/ipfs/"
-            ),
+            uri: imgURI,
+            nftName: jsonMetadata.name,
           };
+          // return jsonMetadata;
         })
       );
 
@@ -113,6 +116,7 @@ function MintPage() {
   };
 
   const mint = async () => {
+    console.log("mint");
     if (
       data.network === networksMap[networkDeployedTo] &&
       info.paused == true
@@ -153,6 +157,7 @@ function MintPage() {
   };
 
   const stakeItem = async (id) => {
+    console.log("stakeItem");
     if (data.network === networksMap[networkDeployedTo]) {
       console.log([id]);
       try {
@@ -194,87 +199,90 @@ function MintPage() {
   };
 
   const unstakeItem = async (id) => {
-    if (data.network === networksMap[networkDeployedTo]) {
-      try {
-        setLoading(true);
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
-        );
-        const signer = provider.getSigner();
-        const staking_contract = new ethers.Contract(
-          stakingContractAddress,
-          stakingContract.abi,
-          signer
-        );
+    console.log("unstakeItem");
+    // if (data.network === networksMap[networkDeployedTo]) {
+    //   try {
+    //     setLoading(true);
+    //     const provider = new ethers.providers.Web3Provider(
+    //       window.ethereum,
+    //       "any"
+    //     );
+    //     const signer = provider.getSigner();
+    //     const staking_contract = new ethers.Contract(
+    //       stakingContractAddress,
+    //       stakingContract.abi,
+    //       signer
+    //     );
 
-        const unstake_tx = await staking_contract.unstake([id]);
-        await unstake_tx.wait();
+    //     const unstake_tx = await staking_contract.unstake([id]);
+    //     await unstake_tx.wait();
 
-        setLoading(false);
-        getInfo();
-      } catch (error) {
-        setLoading(false);
-        window.alert("An error has occured, Please Try Again");
-        console.log(error);
-      }
-    }
+    //     setLoading(false);
+    //     getInfo();
+    //   } catch (error) {
+    //     setLoading(false);
+    //     window.alert("An error has occured, Please Try Again");
+    //     console.log(error);
+    //   }
+    // }
   };
 
   const unstakeAll = async () => {
-    if (data.network === networksMap[networkDeployedTo]) {
-      try {
-        setLoading(true);
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
-        );
-        const signer = provider.getSigner();
-        const staking_contract = new ethers.Contract(
-          stakingContractAddress,
-          stakingContract.abi,
-          signer
-        );
+    console.log("unstakeAll");
+    // if (data.network === networksMap[networkDeployedTo]) {
+    //   try {
+    //     setLoading(true);
+    //     const provider = new ethers.providers.Web3Provider(
+    //       window.ethereum,
+    //       "any"
+    //     );
+    //     const signer = provider.getSigner();
+    //     const staking_contract = new ethers.Contract(
+    //       stakingContractAddress,
+    //       stakingContract.abi,
+    //       signer
+    //     );
 
-        const unstake_tx = await staking_contract.unstake(info.stakedNftIds);
-        await unstake_tx.wait();
+    //     const unstake_tx = await staking_contract.unstake(info.stakedNftIds);
+    //     await unstake_tx.wait();
 
-        setLoading(false);
-        getInfo();
-      } catch (error) {
-        setLoading(false);
-        window.alert("An error has occured, Please Try Again");
-        console.log(error);
-      }
-    }
+    //     setLoading(false);
+    //     getInfo();
+    //   } catch (error) {
+    //     setLoading(false);
+    //     window.alert("An error has occured, Please Try Again");
+    //     console.log(error);
+    //   }
+    // }
   };
 
   const claim = async () => {
-    if (data.network === networksMap[networkDeployedTo]) {
-      try {
-        setLoading(true);
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
-        );
-        const signer = provider.getSigner();
-        const staking_contract = new ethers.Contract(
-          stakingContractAddress,
-          stakingContract.abi,
-          signer
-        );
+    // if (data.network === networksMap[networkDeployedTo]) {
+    //   try {
+    //     setLoading(true);
+    //     const provider = new ethers.providers.Web3Provider(
+    //       window.ethereum,
+    //       "any"
+    //     );
+    //     const signer = provider.getSigner();
+    //     const staking_contract = new ethers.Contract(
+    //       stakingContractAddress,
+    //       stakingContract.abi,
+    //       signer
+    //     );
 
-        const claim_tx = await staking_contract.claim(info.stakedNftIds);
-        await claim_tx.wait();
+    //     const claim_tx = await staking_contract.claim(info.stakedNftIds);
+    //     await claim_tx.wait();
 
-        setLoading(false);
-        getInfo();
-      } catch (error) {
-        setLoading(false);
-        window.alert("An error has occured, Please Try Again");
-        console.log(error);
-      }
-    }
+    //     setLoading(false);
+    //     getInfo();
+    //   } catch (error) {
+    //     setLoading(false);
+    //     window.alert("An error has occured, Please Try Again");
+    //     console.log(error);
+    //   }
+    // }
+    console.log("claim");
   };
 
   useEffect(() => {
@@ -292,9 +300,19 @@ function MintPage() {
             <h3 className="text-center p-2">Minting Info</h3>
             <Table responsive>
               <tbody>
+                {/* <tr>
+                  <td className="p-2">Nft</td>
+                  <td>{info.nftName}</td>
+                </tr>
                 <tr>
-                  <td className="p-2">Total Collection Supply</td>
-                  <td>{info.maxSupply}</td>
+                  <td className="p-2">Symbol</td>
+                  <td>{info.nftSymbol}</td>
+                </tr> */}
+                <tr>
+                  <td className="p-2">Minted / Max Supply</td>
+                  <td>
+                    {info.currentSupply}/{info.maxSupply}
+                  </td>
                 </tr>
                 <tr>
                   <td className="p-2">Minted NFT Count</td>
@@ -316,7 +334,7 @@ function MintPage() {
             <Table responsive>
               <tbody>
                 <tr>
-                  <td className="p-2">Your KryptoPunks </td>
+                  <td className="p-2">Your {info.nftName}s </td>
                   <td>[{info.userNftIds.join(" ")}]</td>
                 </tr>
                 <tr>
@@ -332,7 +350,8 @@ function MintPage() {
                   <td>
                     {info.totalReward !== 0
                       ? parseFloat(info.totalReward).toFixed(6)
-                      : 0}
+                      : 0}{" "}
+                    $RBT
                   </td>
                 </tr>
               </tbody>
@@ -360,13 +379,11 @@ function MintPage() {
             <div className="row" style={{ justifyContent: "center" }}>
               <div className="col-md-7">
                 <div className="text-center">
-                  <h2 className="minttitle title">Claim Your KryptoPunk</h2>
+                  <h2 className="minttitle title">Claim Your {info.nftName}</h2>
                   <img src={image1} className="mint-img" alt="" />
                   <p className="lead" style={{ marginBottom: "30px" }}>
-                    A KryptoPunk is a character that is part of an 10000
-                    algorithmically generated collection consisting of extremely
-                    unique features ranging from faces, eyes, mouths, skins,
-                    hats, and backgrounds.
+                    A {info.nftName} is fully onchain NTFs, no IPFS or any
+                    external storage. Olny code (x.x).
                   </p>
                   <div className="form-group">
                     <div className="d-flex justify-content-center">
@@ -389,7 +406,10 @@ function MintPage() {
                       <button
                         type="button"
                         className="plus btn btn-info rounded-circle"
-                        disabled={mintAmount === info.maxMintAmountPerTx}
+                        disabled={
+                          mintAmount ===
+                          info.maxMintAmountPerTx - info.nftUserBalance
+                        }
                         onClick={() => {
                           setMintAmount(mintAmount + 1);
                         }}
@@ -416,13 +436,16 @@ function MintPage() {
       <section className="my-items">
         {userNfts.length !== 0 ? (
           <>
-            <h2 className="minttitle title text-center">My KryptoPunks</h2>
+            <h2 className="minttitle title text-center">My {info.nftName}s</h2>
             <div className="items container">
               {userNfts.map((nft, index) => {
                 return (
                   <div className="item-box" key={index}>
                     <img src={nft.uri} className="item-img" />
                     <div className="text-center">
+                      <div>
+                        <h5>{nft.nftName}</h5> <span></span>
+                      </div>
                       {info.stakedNftIds.includes(nft.id) ? (
                         <button
                           className="btn btn-info m-3"

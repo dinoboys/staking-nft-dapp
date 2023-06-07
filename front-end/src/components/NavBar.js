@@ -11,7 +11,7 @@ function NavBar() {
     <header className="header">
       <div className="brand">
         <a href="/" className="brand-logo">
-          FlappyOwl
+          <i>RabbitBounching</i>
         </a>
         <div className="nav-burger" id="nav-burger">
           <img

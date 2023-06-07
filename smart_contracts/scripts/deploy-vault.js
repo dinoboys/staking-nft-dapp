@@ -10,12 +10,12 @@ const {
 async function main() {
   const deployNetwork = hre.network.name;
 
-  // FlappyOwl NFT Descriptor contract
-  const DescriptorContract = await ethers.getContractFactory("FODescriptor");
+  // RabbitBounching NFT Descriptor contract
+  const DescriptorContract = await ethers.getContractFactory("RBDescriptor");
   const descriptorContract = await DescriptorContract.deploy();
   await descriptorContract.deployed();
 
-  // Deploy FlappyOwl NFT contract
+  // Deploy RabbitBounching NFT contract
   const maxSupply = 69069;
   const mintCost = getAmountInWei(0.5);
   const maxMintAmountPerTx = 10;
@@ -23,7 +23,7 @@ async function main() {
   const mintingStatus = true;
   const updatableSeed = true;
 
-  const NFTContract = await ethers.getContractFactory("FlappyOwlNft");
+  const NFTContract = await ethers.getContractFactory("RabbitBounching");
   const nftContract = await NFTContract.deploy(
     mintingStatus,
     updatableSeed,
@@ -35,14 +35,14 @@ async function main() {
   );
   await nftContract.deployed();
 
-  // Deploy FlappyOwl ERC20 token contract
-  const TokenContract = await ethers.getContractFactory("FlappyOwlToken");
+  // Deploy RabbitBounching ERC20 token contract
+  const TokenContract = await ethers.getContractFactory("RabbitBounchingToken");
   const tokenContract = await TokenContract.deploy();
 
   await tokenContract.deployed();
 
-  // Deploy FlappyOwlStakingVault contract
-  const Vault = await ethers.getContractFactory("FlappyOwlStakingVault");
+  // Deploy RabbitBounchingStakingVault contract
+  const Vault = await ethers.getContractFactory("RabbitBounchingStakingVault");
   const stakingVault = await Vault.deploy(
     nftContract.address,
     tokenContract.address
@@ -57,12 +57,15 @@ async function main() {
   await control_tx.wait();
 
   console.log(
-    "FlappyOwl Descriptor contract deployed at:\n",
+    "RabbitBounching Descriptor contract deployed at:\n",
     descriptorContract.address
   );
-  console.log("FlappyOwl NFT contract deployed at:\n", nftContract.address);
   console.log(
-    "FlappyOwl ERC20 token contract deployed at:\n",
+    "RabbitBounching NFT contract deployed at:\n",
+    nftContract.address
+  );
+  console.log(
+    "RabbitBounching ERC20 token contract deployed at:\n",
     tokenContract.address
   );
   console.log("NFT Staking Vault deployed at:\n", stakingVault.address);

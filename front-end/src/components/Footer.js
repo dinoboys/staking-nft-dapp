@@ -5,15 +5,17 @@ import { RiDiscordFill } from "react-icons/ri";
 function Footer() {
   return (
     <div className="footer container">
-      <p>FlappyOwl&#169; All Right Reserved</p>
+      <p>
+        <i>RabbitBounching</i>&#169; All Right Reserved
+      </p>
       <div className="social">
-        <a href="https://github.com/kaymen99">
+        <a target="_blank" href="https://github.com/floorpricelab">
           <AiOutlineGithub size={24} color="#000" />
         </a>
-        <a href="https://github.com/kaymen99">
+        <a target="_blank" href="https://twitter.com/rabbitbounching">
           <AiOutlineTwitter size={24} color="#000" />
         </a>
-        <a href="https://github.com/kaymen99">
+        <a target="_blank" href="https://discord.gg/rabbitbounching">
           <RiDiscordFill size={24} color="#000" />
         </a>
       </div>

@@ -1,0 +1,31 @@
+#Deployer
+PRIVATE_KEY=f4b0723032fdfcdab37786cd551d9e1c602d8c8c079df53cd1c9c7d5139c1b75 #0x8ff1e1a5D265bB25554280E407A98dC90F0C0c90
+
+Compiled 2 Solidity files successfully
+FlappyOwl Descriptor contract deployed at:
+ 0xe047ac1FEe933F7A3f2773838a17e38328548E4F
+FlappyOwl NFT contract deployed at:
+ 0x856D582D14330720FeCF77370Dc81F75dA84B75B //v1
+ 0x488784FF039f0C0bC9a9E99D992768c4de7aa6E4 //v2
+FlappyOwl ERC20 token contract deployed at:
+ 0xd6ADDcB45e84773FAa5c4F71B8a5dfDF44FEA6fB
+NFT Staking Vault deployed at:
+ 0x51072b99c6FEF8Ff4081a3aA12EA02e3d4012316
+Network deployed to :
+ goerli
+Done in 94.97s.
+
+
+=================== new deploy ============================
+Compiled 27 Solidity files successfully
+FlappyOwl Descriptor contract deployed at:
+ 0x1de41Bc52d34d6236D066dC251Cd32B17A3b23Ff
+FlappyOwl NFT contract deployed at:
+ 0x23A09D7D880ADec60a6128d4c22fEC50cf15E230
+FlappyOwl ERC20 token contract deployed at:
+ 0xe2563d2bFc8b225BFcf0e5789099484dE3b3aF04
+NFT Staking Vault deployed at:
+ 0xc9012c175C2937D73940a9d01CD58556356D1527
+Network deployed to :
+ goerli
+Done in 126.40s.

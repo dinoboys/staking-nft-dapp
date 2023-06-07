@@ -2,20 +2,20 @@
 
 pragma solidity 0.8.17;
 
-import "../interfaces/IFlappyOwlNft.sol";
-import "../interfaces/IFlappyOwlToken.sol";
+import "../interfaces/IRabbitBounching.sol";
+import "../interfaces/IRabbitBounchingToken.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
+contract RabbitBounchingStakingVault is Ownable, IERC721Receiver {
     //--------------------------------------------------------------------
     // VARIABLES
 
     uint256 public totalItemsStaked;
     uint256 private constant MONTH = 30 days;
 
-    IFlappyOwlNft nft;
-    IFlappyOwlToken token;
+    IRabbitBounching nft;
+    IRabbitBounchingToken token;
 
     struct Stake {
         address owner;
@@ -34,15 +34,15 @@ contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
     //--------------------------------------------------------------------
     // ERRORS
 
-    error FlappyOwlStakingVault__ItemAlreadyStaked();
-    error FlappyOwlStakingVault__NotItemOwner();
+    error RabbitBounchingStakingVault__ItemAlreadyStaked();
+    error RabbitBounchingStakingVault__NotItemOwner();
 
     //--------------------------------------------------------------------
     // CONSTRUCTOR
 
     constructor(address _nftAddress, address _tokenAddress) {
-        nft = IFlappyOwlNft(_nftAddress);
-        token = IFlappyOwlToken(_tokenAddress);
+        nft = IRabbitBounching(_nftAddress);
+        token = IRabbitBounchingToken(_tokenAddress);
     }
 
     //--------------------------------------------------------------------
@@ -51,8 +51,8 @@ contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
         address _nftAddress,
         address _tokenAddress
     ) external onlyOwner {
-        token = IFlappyOwlToken(_tokenAddress);
-        nft = IFlappyOwlNft(_nftAddress);
+        token = IRabbitBounchingToken(_tokenAddress);
+        nft = IRabbitBounching(_nftAddress);
     }
 
     function stake(uint256[] calldata tokenIds) external {
@@ -63,10 +63,10 @@ contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
         for (uint256 i; i < len; ) {
             tokenId = tokenIds[i];
             if (vault[tokenId].owner != address(0)) {
-                revert FlappyOwlStakingVault__ItemAlreadyStaked();
+                revert RabbitBounchingStakingVault__ItemAlreadyStaked();
             }
             if (nft.ownerOf(tokenId) != msg.sender) {
-                revert FlappyOwlStakingVault__NotItemOwner();
+                revert RabbitBounchingStakingVault__NotItemOwner();
             }
 
             nft.safeTransferFrom(msg.sender, address(this), tokenId);
@@ -104,7 +104,7 @@ contract FlappyOwlStakingVault is Ownable, IERC721Receiver {
         for (uint256 i; i < len; ) {
             tokenId = tokenIds[i];
             if (vault[tokenId].owner != user) {
-                revert FlappyOwlStakingVault__NotItemOwner();
+                revert RabbitBounchingStakingVault__NotItemOwner();
             }
             uint256 _stakedAt = vault[tokenId].stakedAt;
 

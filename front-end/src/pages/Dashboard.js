@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { Form } from "react-bootstrap";
 import { CircularProgress } from "@mui/material";
 
-import nftContract from "../artifacts/contracts/ERC721/FlappyOwlNft.sol/FlappyOwlNft.json";
+import nftContract from "../artifacts/ERC721/RabbitBounching.sol/RabbitBounching.json";
 import {
   nftContractAddress,
   ownerAddress,
