@@ -6,7 +6,8 @@ coverage.json
 typechain
 typechain-types
 
-data-deploy.txt
+data-deploy_1F2572a.txt
+data-deploy0x8ff1e1a5D265bB25554280E407A98dC90F0C0c90.txt
 smart_contracts/artifacts
 front-end/src/artifacts
 front-end/src/artifacts-old
