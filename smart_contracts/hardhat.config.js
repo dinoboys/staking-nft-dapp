@@ -20,12 +20,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-// const ETHEREUM_RPC_URL = process.env.ETHEREUM_RPC_URL;
-// const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
-// const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY;
-// const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL;
-// const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
-// const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ACCOUNT = process.env.PRIVATE_KEY;
 
@@ -54,14 +48,26 @@ module.exports = {
     mainnet: {
       url: process.env.ETHEREUM_RPC_URL,
       chainId: 1,
-      accounts: [ACCOUNT],
       blockConfirmations: 6,
+      accounts: [ACCOUNT],
     },
     polygon: {
       url: process.env.POLYGON_RPC_URL,
-      chainId: 0000000,
-      accounts: [ACCOUNT],
+      chainId: 137,
       blockConfirmations: 6,
+      accounts: [ACCOUNT],
+    },
+    arbitrumOne: {
+      url: process.env.ARBITRUMONE_RPC_URL,
+      chainId: 42161,
+      blockConfirmations: 6,
+      accounts: [ACCOUNT],
+    },
+    optimism: {
+      url: process.env.OPTIMISM_RPC_URL,
+      chainId: 10,
+      blockConfirmations: 6,
+      accounts: [ACCOUNT],
     },
     goerli: {
       url: process.env.GOERLI_RPC_URL,
@@ -69,26 +75,28 @@ module.exports = {
       accounts: [ACCOUNT],
       blockConfirmations: 6,
     },
+    rinkeby: {
+      url: process.env.RINKEBY_RPC_URL,
+      chainId: 4,
+      blockConfirmations: 6,
+      accounts: [ACCOUNT],
+    },
+    spoila: {
+      url: process.env.SPOLIA_RPC_URL,
+      chainId: 11155111,
+      blockConfirmations: 6,
+      accounts: [ACCOUNT],
+    },
+    mumbai: {
+      url: process.env.MUMBAI_RPC_URL,
+      chainId: 80001,
+      accounts: [ACCOUNT],
+    },
     bsctestnet: {
-      url: process.env.BSCTESTNET_RPC_URL"https://data-seed-prebsc-1-s1.binance.org:8545",
+      url: process.env.BSCTESTNET_RPC_URL,
       chainId: 97,
       accounts: [ACCOUNT],
     },
-    // rinkeby: {
-    //   url: RINKEBY_RPC_URL,
-    //   accounts: [ACCOUNT],
-    //   chainId: 4,
-    // }
-    // mumbai: {
-    //   url: MUMBAI_RPC_URL,
-    //   accounts: [ACCOUNT],
-    //   chainId: 80001,
-    // },
-    // polygon: {
-    //   url: POLYGON_RPC_URL,
-    //   accounts: [ACCOUNT],
-    //   chainId: 137,
-    // }
   },
   paths: {
     artifacts: "./artifacts",
@@ -104,7 +112,8 @@ module.exports = {
     apiKey: {
       mainnet: ETHERSCAN_API_KEY,
       goerli: ETHERSCAN_API_KEY,
-      rinkeby: RINKEBY_ETHERSCAN_API_KEY,
+      spoila: ETHERSCAN_API_KEY,
+      rinkeby: ETHERSCAN_API_KEY,
       bsc: BSCSCAN_API_KEY,
     },
   },
