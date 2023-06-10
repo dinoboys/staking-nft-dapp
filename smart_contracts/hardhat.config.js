@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("@nomiclabs/hardhat-etherscan");
 require("@nomicfoundation/hardhat-chai-matchers");
+require("@nomiclabs/hardhat-truffle5");
 require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -82,7 +83,7 @@ module.exports = {
       accounts: [ACCOUNT],
     },
     spoila: {
-      url: process.env.SPOLIA_RPC_URL,
+      url: process.env.SPOILA_RPC_URL,
       chainId: 11155111,
       blockConfirmations: 6,
       accounts: [ACCOUNT],
@@ -114,7 +115,6 @@ module.exports = {
       goerli: ETHERSCAN_API_KEY,
       spoila: ETHERSCAN_API_KEY,
       rinkeby: ETHERSCAN_API_KEY,
-      bsc: BSCSCAN_API_KEY,
     },
   },
 };
