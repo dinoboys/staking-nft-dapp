@@ -7,8 +7,10 @@ require("hardhat-gas-reporter");
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
+  // const accounts = await hre.ethers.getSigners();
+  const accounts = await web3.eth.getAccounts();
 
+  console.log(account);
   for (const account of accounts) {
     console.log(account.address);
   }
@@ -44,7 +46,6 @@ module.exports = {
     ganache: {
       chainId: 1337,
       url: "http://127.0.0.1:7545",
-      accounts: [ACCOUNT],
     },
     mainnet: {
       url: process.env.ETHEREUM_RPC_URL,

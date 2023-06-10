@@ -1141,7 +1141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nomiclabs/truffle-contract@npm:^4.2.23":
+"@nomiclabs/truffle-contract@npm:^4.2.23, @nomiclabs/truffle-contract@npm:^4.5.10":
   version: 4.5.10
   resolution: "@nomiclabs/truffle-contract@npm:4.5.10"
   dependencies:
@@ -1903,28 +1903,6 @@ __metadata:
   checksum: 08d37fdfa23a6fe8139f1305313562ebad973f3fac01bcce2773b2bda5bcb0146dfdcf3cb6a722cf0a5f2ca0bc56a827eac8f1e7b3beddc548f654addf1fc34c
   languageName: node
   linkType: hard
-
-"KryptoPunks_smart_contracts@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "KryptoPunks_smart_contracts@workspace:."
-  dependencies:
-    "@nomicfoundation/hardhat-chai-matchers": ^1.0.2
-    "@nomiclabs/hardhat-ethers": ^2.0.6
-    "@nomiclabs/hardhat-etherscan": ^3.1.0
-    "@nomiclabs/hardhat-truffle5": ^2.0.7
-    "@nomiclabs/hardhat-waffle": ^2.0.3
-    "@nomiclabs/hardhat-web3": ^2.0.0
-    "@openzeppelin/contracts": ^4.7.2
-    "@truffle/dashboard-hardhat-plugin": ^0.2.7
-    chai: ^4.3.6
-    dotenv: ^16.0.1
-    erc721a: ^4.2.2
-    ethers: ^5.6.8
-    hardhat: ^2.9.9
-    hardhat-gas-reporter: ^1.0.8
-    web3: ^4.0.1
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^1.0.0":
   version: 1.1.1
@@ -6941,6 +6919,29 @@ __metadata:
   checksum: 83b5cf36027a53ee6d8b7f9c0782f2ba87f4858d977342bfc3c20c21629290a2111f8374d13a81221179603ffc4364f38374b5655d17b6a8f8a8c77bdea4fe8b
   languageName: node
   linkType: hard
+
+"nft_vault_smart_contracts@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "nft_vault_smart_contracts@workspace:."
+  dependencies:
+    "@nomicfoundation/hardhat-chai-matchers": ^1.0.2
+    "@nomiclabs/hardhat-ethers": ^2.0.6
+    "@nomiclabs/hardhat-etherscan": ^3.1.0
+    "@nomiclabs/hardhat-truffle5": ^2.0.7
+    "@nomiclabs/hardhat-waffle": ^2.0.3
+    "@nomiclabs/hardhat-web3": ^2.0.0
+    "@nomiclabs/truffle-contract": ^4.5.10
+    "@openzeppelin/contracts": ^4.7.2
+    "@truffle/dashboard-hardhat-plugin": ^0.2.7
+    chai: ^4.3.6
+    dotenv: ^16.0.1
+    erc721a: ^4.2.2
+    ethers: ^5.6.8
+    hardhat: ^2.9.9
+    hardhat-gas-reporter: ^1.0.8
+    web3: ^4.0.1
+  languageName: unknown
+  linkType: soft
 
 "no-case@npm:^2.2.0, no-case@npm:^2.3.2":
   version: 2.3.2
