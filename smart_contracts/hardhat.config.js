@@ -20,13 +20,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-const RINKEBY_ETHERSCAN_API_KEY = process.env.RINKEBY_ETHERSCAN_API_KEY;
+// const ETHEREUM_RPC_URL = process.env.ETHEREUM_RPC_URL;
+// const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
+// const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY;
+// const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL;
+// const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
+// const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY;
-const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL;
-const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL;
 const ACCOUNT = process.env.PRIVATE_KEY;
 
 module.exports = {
@@ -51,16 +51,27 @@ module.exports = {
       url: "http://127.0.0.1:7545",
       accounts: [ACCOUNT],
     },
-    goerli: {
-      url: GOERLI_RPC_URL,
+    mainnet: {
+      url: process.env.ETHEREUM_RPC_URL,
+      chainId: 1,
       accounts: [ACCOUNT],
+      blockConfirmations: 6,
+    },
+    polygon: {
+      url: process.env.POLYGON_RPC_URL,
+      chainId: 0000000,
+      accounts: [ACCOUNT],
+      blockConfirmations: 6,
+    },
+    goerli: {
+      url: process.env.GOERLI_RPC_URL,
       chainId: 5,
+      accounts: [ACCOUNT],
       blockConfirmations: 6,
     },
     bsctestnet: {
-      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      url: process.env.BSCTESTNET_RPC_URL"https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
-      // gasPrice: 20000000000,
       accounts: [ACCOUNT],
     },
     // rinkeby: {
@@ -90,12 +101,11 @@ module.exports = {
     coin: "ETH",
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
-    // apiKey: {
-    //   default: ETHERSCAN_API_KEY,
-    //   goerli: ETHERSCAN_API_KEY,
-    //   rinkeby: RINKEBY_ETHERSCAN_API_KEY,
-    //   bsc: BSCSCAN_API_KEY,
-    // },
+    apiKey: {
+      mainnet: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
+      rinkeby: RINKEBY_ETHERSCAN_API_KEY,
+      bsc: BSCSCAN_API_KEY,
+    },
   },
 };
